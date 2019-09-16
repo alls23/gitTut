@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      lang="en">
+<head>
+    <title>Simple Sidebar - Start Bootstrap Template</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link href="/css/home.css" type="text/css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="js.js"></script>
+</head>
+
+<body>
+<div id="viewport">
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidenav">
+        <header>
+            <a href="#">My App</a>
+        </header>
+        <ul class="nav">
+            <li>
+                <a sec:authorize="hasAuthority('admin')" class="nav-link active show admin-nav-item admin-sidebar-item active"  data-toggle="pill" href="#admin-communicate" role="tab" aria-controls="admin-communicate" aria-selected="true">Admin</a>
+            </li>
+            <li>
+                <a class="nav-link admin-nav-item admin-sidebar-item" data-toggle="pill" href="#admin-requests" role="tab" aria-controls="admin-requests" aria-selected="false">User</a>
+            </li>
+        </ul>
+    </div>
+    <!-- Content -->
+    <div id="content">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid" style="margin-right: 20px">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#"><i class="zmdi zmdi-notifications text-danger"><a href="#" th:href="@{/logout}">Log Out</a></i></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="tab-pane fade active show" id="admin-communicate" role="tabpanel" aria-labelledby="admin-communic
+	</div>ate-tab">
+            <ul class="nav nav-pills">
+                <li class="active"><a data-toggle="tab" href="#home">Users table</a></li>
+                <li><a data-toggle="tab" href="#menu1">Add user</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="home" class="tab-pane fade in active">
+                    <table class="table table-inverse">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Login</th>
+                            <th>Name</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="tabU" th:each="user : ${userDataSets}">
+                            <td id="userId" th:value="${user.id}" th:text="${user.id}"></td>
+                            <td id="userLogin" th:text="${user.login}"></td>
+                            <td id="userName" th:text="${user.name}"></td>
+                            <td><button id="mod1" value="" onclick="openModal()" type="button" th:value="${user.id}" >Click Me!</button></td>
+
+                            <!--                            <td><a value="" id="mod1" th:value="${user.id}" onclick="openModal()">Edit</a></td>-->
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="menu1" class="tab-pane fade">
+                    <form action="#" th:action="@{/home/addUser}" th:object="${user}" method="post">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="login">Login</label>
+                                <input type="password" th:field="*{login}" id="newLogin" style="margin-left: 26px" placeholder="Login">
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="password" th:field="*{name}" id="newName" style="margin-left: 26px" placeholder="Name">
+                            </div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" th:field="*{password}" id="newPassword" placeholder="Password">
+                                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                            </div>
+                        </div>
+                        <input type="submit" value="Add User">
+                    </form>
+                </div>
+            </div>
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Edit user</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form action="#" id="modalForm" th:action="@{/home/{id}(id=${user.id})}" th:object="${user}" method="post">
+                                <div class="form-group row">
+                                    <label for="login" class="col-lg-3 col-form-label form-control-label">Login</label>
+                                    <div class="col-lg-9">
+                                        <input th:id="loginEditIn" type="text" th:field="*{login}" id="login" placeholder="Login" value="">
+                                        <span th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="name"  class="col-lg-3 col-form-label form-control-label">Name</label>
+                                    <div class="col-lg-9">
+                                        <input th:id="nameEditIn" type="text" th:field="*{name}" id="name" placeholder="Name" value="">
+                                        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="password" class="col-lg-3 col-form-label form-control-label">Password</label>
+                                    <div class="col-lg-9">
+                                        <input type="password" th:field="*{password}" id="password" placeholder="Password">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <input type="submit" value="Update User" style="margin-left: 203px">
+                                </div>
+
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="tab-pane fade active show" id="admin-requests" role="tabpanel" aria-labelledby="admin-requests-tab" style="margin-top: -280px">
+            <p> Hello user!</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
